@@ -1,0 +1,151 @@
+---
+title: "Лабораторная работа №4"
+author: "Турутин Дмитрий ФН11-33Б"
+date: "26/11/2022"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+---
+# Задание 1
+Сохраните в формате pdf, затем в png диаграмму рассеивания зависимости расхода топлива (mpg) от веса автомобиля (wt) в mtcars. Также добавьте горизонтальную линию,
+проходящую, через среднее значение mpg.
+### Решение 
+```{r}
+# Используем tibble для красивого отображения datframe'а
+library("dplyr")
+data(mtcars)
+mtcars_tibble <- as_tibble(mtcars)
+mtcars_tibble
+mean <- mean(mtcars_tibble$mpg)
+```
+Сохранить график зависимости mpg от wt в **pdf**
+```{r dev = "pdf"}
+# pdf('plot.pdf')
+{plot(mpg ~ wt, data = mtcars_tibble)
+abline(h = mean)}
+# dev.off()
+```
+Сохранить график в **png**
+```{r dev = "png"}
+# png('plot.png')
+{plot(mpg ~ wt, data = mtcars_tibble)
+abline(h = mean)}
+# dev.off()
+```
+
+# Задание 2
+Есть набор данных -- реакция пациента на лекарство в пяти дозировках: 
+```{r}
+dose <- c(20, 30, 40, 45, 60)
+drugA <- c(16, 20, 27, 40, 60)
+dragB <- c(15, 18, 25, 31, 40)
+```
+Постройте график реакции пациента на первое лекарство. Укажите графические параметры -- пунктирная линия, и треугольники вместо точек.
+Добавьте заголовок красного цвета. Добавьте подписи осей.
+Границу по x укажите (0; 60) по y (0;70)
+### График реакции на первое лекарство
+```{r}
+opar <- par(no.readonly=T)
+par(lty=2, pch=6)
+plot(dose ~ drugA, main="Зависимость первого лекарства от дозировки", col.main="red", xlab="Дозировка", ylab="Реакция пациента", xlim=c(0,60), ylim=c(0,70), type="b")
+par(opar)
+```
+Поянения:
+
+- lty -- выбрать тип линии (2 ~ пунктирная)
+- pch -- выбрать тип точек (6 ~ треугольники)
+- main -- заголовок 
+- col.main -- цвет заголовка 
+- ylab -- подпись для оси **Oy**
+- xlab -- подпись для оси **Ox**
+- xlim -- расставить пределы по оси x
+- ylim -- расставить пределы по оси y
+- type -- тип графика (b ~ линия)
+
+# Задание 3
+Тот же набор 
+```{r}
+dose <- c(20, 30, 40, 45, 60)
+drugA <- c(16, 20, 27, 40, 60)
+drugB <- c(15, 18, 25, 31, 40)
+```
+*Задача:* 
+
+- [x] Отобразить сравнение эффектов от препаратов в одном окне. 
+- [x] Выбрать различные типы линий и символов
+- [x] Добавить заголовок "Сравнение препаратов A и B"
+- [x] Добавить легенду 
+
+### Отобразить сравнение эффектов от препаратов в одном окне
+```{r}
+plot(dose ~ drugA, main="Сравнение препаратов A и B", col.main="red", xlab="Дозировка", ylab="Реакция пациента", xlim=c(0,60), ylim=c(0,70), type="b", col="green", pch=6, lty=2)
+# График второго препарата
+lines(dose ~ drugB, type="b", pch=14, lty=1, col="red")
+# Легенда
+legend("topleft", inset=.1, title="Тип препарата", c("A", "B"), lty=c(2,1), pch=c(6, 14), col=c("green","red"))
+
+```
+
+# Задание 4
+Отобразить 4 диаграммы boxplot() на одном поле на примере датасета iris
+
+- [x] Отобразить Sepal.Length
+- [x] Отобразить Sepal.Width
+- [x] Отобразить Petal.Length
+- [x] Отобразить Petal.Width
+
+*в зависимости от Species*
+```{r}
+data(iris)
+
+iris_tibble = as_tibble(iris)
+names(iris_tibble)
+```
+```{r}
+iris_tibble
+unique(iris_tibble$Species)
+```
+### Для setosa
+```{r}
+par(mfrow=c(2, 2))
+setosa <-  filter(iris_tibble, Species=="setosa")
+setosa
+boxplot(setosa$Sepal.Length, main="Sepal length")
+boxplot(setosa$Sepal.Width, main="Sepal width")
+boxplot(setosa$Petal.Length, main="Petal Length")
+boxplot(setosa$Petal.Width, main="Petal Width")
+mtext("Setosa", side = 1, line=-30, outer=T)
+```
+
+### Для versicolor
+```{r}
+par(mfrow=c(2, 2))
+versicolor <-  filter(iris_tibble, Species=="versicolor")
+versicolor
+boxplot(versicolor$Sepal.Length, main="Sepal length")
+boxplot(versicolor$Sepal.Width, main="Sepal width")
+boxplot(versicolor$Petal.Length, main="Petal Length")
+boxplot(versicolor$Petal.Width, main="Petal Width")
+mtext("Versicolor", side = 1, line=-30, outer=T)
+```
+
+### Для virginica
+```{r}
+par(mfrow=c(2, 2))
+virginica <-  filter(iris_tibble, Species=="virginica")
+virginica
+boxplot(virginica$Sepal.Length, main="Sepal length")
+boxplot(virginica$Sepal.Width, main="Sepal width")
+boxplot(virginica$Petal.Length, main="Petal Length")
+boxplot(virginica$Petal.Width, main="Petal Width")
+mtext("Virginica", side = 1, line=-30, outer=T)
+```
+
+
+
+
+
+
+
